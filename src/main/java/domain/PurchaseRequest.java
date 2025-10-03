@@ -15,7 +15,7 @@ public class PurchaseRequest {
         this.maxArea = maxArea;
         this.minPrice = minPrice;
         this.maxPrice = maxPrice;
-        this.client = client
+        this.client = client;
     }
 
 
