@@ -5,12 +5,14 @@ public class Apartment {
     private int roomCount;
     private int area;
     private int price; // Stored as integer and divided by 100 for displaying
+    private Client client;
 
-    public Apartment(String address, int roomCount, int area, int price) {
+    public Apartment(String address, int roomCount, int area, int price, Client client) {
         this.address = address;
         this.roomCount = roomCount;
         this.area = area;
         this.price = price;
+        this.client = client;
     }
 
 
@@ -30,6 +32,14 @@ public class Apartment {
         return price;
     }
 
+    public Client getClient() {
+        return client;
+    }
+
+
+    public void setClient(Client client) {
+        this.client = client;
+    }
 
     public void setAddress(String address) {
         this.address = address;
