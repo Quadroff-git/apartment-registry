@@ -1,6 +1,7 @@
 package domain;
 
 public class Apartment {
+    private int id;
     private String address;
     private int roomCount;
     private int area;
@@ -15,6 +16,14 @@ public class Apartment {
         this.client = client;
     }
 
+    public Apartment(int price, int id, String address, int area, int roomCount, Client client) {
+        this.price = price;
+        this.id = id;
+        this.address = address;
+        this.area = area;
+        this.roomCount = roomCount;
+        this.client = client;
+    }
 
     public String getAddress() {
         return address;
