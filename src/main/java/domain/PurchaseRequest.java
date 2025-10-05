@@ -1,6 +1,7 @@
 package domain;
 
 public class PurchaseRequest {
+    private int id;
     private int roomCount;
     private int minArea;
     private int maxArea;
@@ -18,6 +19,16 @@ public class PurchaseRequest {
         this.client = client;
     }
 
+
+    public PurchaseRequest(Client client, int maxPrice, int minPrice, int maxArea, int minArea, int roomCount, int id) {
+        this.client = client;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
+        this.maxArea = maxArea;
+        this.minArea = minArea;
+        this.roomCount = roomCount;
+        this.id = id;
+    }
 
     public int getRoomCount() {
         return roomCount;
