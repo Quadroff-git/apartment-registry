@@ -6,25 +6,22 @@ public class Apartment {
     private int roomCount;
     private int area;
     private int price; // Stored as integer and divided by 100 for displaying
-    private Client client;
 
 
-    public Apartment(String address, int roomCount, int area, int price, Client client) {
+    public Apartment(String address, int roomCount, int area, int price) {
         this.id = null;
         this.address = address;
         this.roomCount = roomCount;
         this.area = area;
         this.price = price;
-        this.client = client;
     }
 
-    public Apartment(int price, int id, String address, int area, int roomCount, Client client) {
+    public Apartment(int price, int id, String address, int area, int roomCount) {
         this.id = id;
         this.address = address;
         this.roomCount = roomCount;
         this.area = area;
         this.price = price;
-        this.client = client;
     }
 
 
@@ -46,10 +43,6 @@ public class Apartment {
         return price;
     }
 
-    public Client getClient() {
-        return client;
-    }
-
 
     public void setId(Integer id) { this.id = id; }
 
@@ -68,8 +61,6 @@ public class Apartment {
     public void setPrice(int price) {
         this.price = price;
     }
-
-    public void setClient(Client client) { this.client = client; }
 
 
     @Override
