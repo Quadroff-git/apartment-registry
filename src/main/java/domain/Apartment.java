@@ -1,14 +1,16 @@
 package domain;
 
 public class Apartment {
-    private int id;
+    private Integer id;
     private String address;
     private int roomCount;
     private int area;
     private int price; // Stored as integer and divided by 100 for displaying
     private Client client;
 
+
     public Apartment(String address, int roomCount, int area, int price, Client client) {
+        this.id = null;
         this.address = address;
         this.roomCount = roomCount;
         this.area = area;
@@ -17,13 +19,16 @@ public class Apartment {
     }
 
     public Apartment(int price, int id, String address, int area, int roomCount, Client client) {
-        this.price = price;
         this.id = id;
         this.address = address;
-        this.area = area;
         this.roomCount = roomCount;
+        this.area = area;
+        this.price = price;
         this.client = client;
     }
+
+
+    public Integer getId() { return id; }
 
     public String getAddress() {
         return address;
@@ -46,9 +51,7 @@ public class Apartment {
     }
 
 
-    public void setClient(Client client) {
-        this.client = client;
-    }
+    public void setId(Integer id) { this.id = id; }
 
     public void setAddress(String address) {
         this.address = address;
@@ -65,6 +68,9 @@ public class Apartment {
     public void setPrice(int price) {
         this.price = price;
     }
+
+    public void setClient(Client client) { this.client = client; }
+
 
     @Override
     public String toString() {

@@ -1,7 +1,7 @@
 package domain;
 
 public class PurchaseRequest {
-    private int id;
+    private Integer id;
     private int roomCount;
     private int minArea;
     private int maxArea;
@@ -11,6 +11,7 @@ public class PurchaseRequest {
 
 
     public PurchaseRequest(int roomCount, int minArea, int maxArea, int minPrice, int maxPrice, Client client) {
+        this.id = null;
         this.roomCount = roomCount;
         this.minArea = minArea;
         this.maxArea = maxArea;
@@ -20,15 +21,18 @@ public class PurchaseRequest {
     }
 
 
-    public PurchaseRequest(Client client, int maxPrice, int minPrice, int maxArea, int minArea, int roomCount, int id) {
-        this.client = client;
-        this.maxPrice = maxPrice;
-        this.minPrice = minPrice;
-        this.maxArea = maxArea;
-        this.minArea = minArea;
-        this.roomCount = roomCount;
+    public PurchaseRequest(int id, int roomCount, int minArea, int maxArea, int minPrice, int maxPrice, Client client) {
         this.id = id;
+        this.client = client;
+        this.maxPrice = maxPrice;
+        this.minPrice = minPrice;
+        this.maxArea = maxArea;
+        this.minArea = minArea;
+        this.roomCount = roomCount;
     }
+
+
+    public Integer getId() { return id; }
 
     public int getRoomCount() {
         return roomCount;
@@ -55,14 +59,7 @@ public class PurchaseRequest {
     }
 
 
-
-    public void setClient(Client client) {
-        this.client = client;
-    }
-
-    public void setMaxArea(int maxArea) {
-        this.maxArea = maxArea;
-    }
+    public void setId(Integer id) { this.id = id; }
 
     public void setRoomCount(int roomCount) {
         this.roomCount = roomCount;
@@ -72,12 +69,18 @@ public class PurchaseRequest {
         this.minArea = minArea;
     }
 
+    public void setMaxArea(int maxArea) { this.maxArea = maxArea; }
+
     public void setMinPrice(int minPrice) {
         this.minPrice = minPrice;
     }
 
     public void setMaxPrice(int maxPrice) {
         this.maxPrice = maxPrice;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
 
