@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.util.List;
 
 public abstract class BaseDao<T> {
-    private Connection connection;
+    protected Connection connection;
 
     public BaseDao(Connection connection) {
         this.connection = connection;
