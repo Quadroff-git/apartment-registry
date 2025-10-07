@@ -3,10 +3,7 @@ package db.dao;
 import db.ConnectionManager;
 import domain.Apartment;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -16,8 +13,10 @@ public class ApartmentDao extends BaseDao<Apartment>{
             "FROM apartment";
 
     private static final String SQL_FIND_APARTMENT_BY_ID =
-            "SELECT *\n" +
+            "SELECT * \n" +
+            "FROM apartment\n" +
             "WHERE apartment.id = ?";
+
 
     private static final String SQL_DELETE_APARTMENT =
             "DELETE\n" +
@@ -68,31 +67,42 @@ public class ApartmentDao extends BaseDao<Apartment>{
     }
 
     @Override
-    public Apartment findById(int id) {
+    public Apartment findById(int id) throws SQLException {
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getNextApartment(resultSet);
+            }
+            else {
+                return null;
+            }
+        }
+
+    }
+
+    @Override
+    public boolean delete(int id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public boolean delete(Apartment entity) throws SQLException{
+        return false;
+    }
+
+    @Override
+    public boolean create(Apartment entity) throws SQLException{
+        return false;
+    }
+
+    @Override
+    public Apartment update(Apartment entity) throws SQLException{
         return null;
     }
 
-    @Override
-    public boolean delete(int id) {
-        return false;
-    }
 
-    @Override
-    public boolean delete(Apartment entity) {
-        return false;
-    }
-
-    @Override
-    public boolean create(Apartment entity) {
-        return false;
-    }
-
-    @Override
-    public Apartment update(Apartment entity) {
-        return null;
-    }
-
-
+    // Accepts a resultSet with cursor set to a non-empty row
     private Apartment getNextApartment(ResultSet resultSet) throws SQLException{
         return new Apartment(
                 resultSet.getInt("id"),
@@ -108,9 +118,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
             ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
-            for (Apartment apartment : apartmentDao.getAll()) {
-                System.out.println(apartment + "\n");
-            }
+            System.out.println(apartmentDao.findById(16));
         } catch (SQLException e) {
             System.out.println(e);
         }
