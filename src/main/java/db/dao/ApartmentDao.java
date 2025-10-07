@@ -1,8 +1,13 @@
 package db.dao;
 
+import db.ConnectionManager;
 import domain.Apartment;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ApartmentDao extends BaseDao<Apartment>{
@@ -49,8 +54,17 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
 
     @Override
-    public List<Apartment> getAll() {
-        return List.of();
+    public List<Apartment> getAll() throws SQLException {
+        ArrayList<Apartment> apartments = new ArrayList<>();
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_APARTMENTS);
+
+            while (resultSet.next()) {
+                apartments.add(getNextApartment(resultSet));
+            }
+        }
+
+        return apartments;
     }
 
     @Override
@@ -76,5 +90,31 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public Apartment update(Apartment entity) {
         return null;
+    }
+
+
+    private Apartment getNextApartment(ResultSet resultSet) throws SQLException{
+        return new Apartment(
+                resultSet.getInt("id"),
+                resultSet.getString("street") + " " + resultSet.getInt("building") + ", " + resultSet.getInt("number"),
+                resultSet.getInt("room_count"),
+                resultSet.getInt("area"),
+                resultSet.getInt("price"));
+    }
+
+
+    public static void main(String[] argv) {
+        try {
+            ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
+
+            ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
+            for (Apartment apartment : apartmentDao.getAll()) {
+                System.out.println(apartment + "\n");
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        }
+
+
     }
 }
