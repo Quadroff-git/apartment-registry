@@ -7,24 +7,11 @@ import java.util.List;
 
 public class ApartmentDao extends BaseDao<Apartment>{
     private static final String SQL_SELECT_ALL_APARTMENTS =
-            "SELECT \n" +
-            "apartment.room_count, \n" +
-            "apartment.area, \n" +
-            "apartment.price, \n" +
-            "apartment.street, \n" +
-            "apartment.building, \n" +
-            "apartment.number \n" +
+            "SELECT * \n" +
             "FROM apartment";
 
     private static final String SQL_FIND_APARTMENT_BY_ID =
-            "SELECT \n" +
-            "apartment.room_count, \n" +
-            "apartment.area, \n" +
-            "apartment.price, \n" +
-            "apartment.street, \n" +
-            "apartment.building, \n" +
-            "apartment.number \n" +
-            "FROM apartment\n" +
+            "SELECT *\n" +
             "WHERE apartment.id = ?";
 
     private static final String SQL_DELETE_APARTMENT =
