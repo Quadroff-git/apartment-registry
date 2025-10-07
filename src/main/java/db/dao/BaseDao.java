@@ -1,6 +1,7 @@
 package db.dao;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BaseDao<T> {
@@ -10,10 +11,10 @@ public abstract class BaseDao<T> {
         this.connection = connection;
     }
 
-    public abstract List<T> getAll();
-    public abstract T findById(int id);
-    public abstract boolean delete(int id);
-    public abstract boolean delete(T entity);
-    public abstract boolean create(T entity);
-    public abstract T update(T entity);
+    public abstract List<T> getAll() throws SQLException;
+    public abstract T findById(int id) throws SQLException;
+    public abstract boolean delete(int id) throws SQLException;
+    public abstract boolean delete(T entity) throws SQLException;
+    public abstract boolean create(T entity) throws SQLException;
+    public abstract T update(T entity) throws SQLException;
 }
