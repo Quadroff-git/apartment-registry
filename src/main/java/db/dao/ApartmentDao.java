@@ -29,9 +29,8 @@ public class ApartmentDao extends BaseDao<Apartment>{
             "price, \n" +
             "street, \n" +
             "building, \n" +
-            "number, \n" +
-            "client_id) \n" +
-            "VALUES (?, ?, ?, ?, ?, ?, ?)";
+            "number)\n" +
+            "VALUES (?, ?, ?, ?, ?, ?)";
 
     private static final String SQL_UPDATE_APARTMENT =
             "UPDATE apartment\n" +
@@ -101,7 +100,25 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public boolean create(Apartment entity) throws SQLException{
-        return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
+            preparedStatement.setInt(1, entity.getRoomCount());
+            preparedStatement.setInt(2, entity.getArea());
+            preparedStatement.setInt(3, entity.getPrice());
+            preparedStatement.setString(4, entity.getStreet());
+            preparedStatement.setInt(5, entity.getBuilding());
+            preparedStatement.setInt(6, entity.getNumber());
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                entity.setId(resultSet.getInt(1));
+            }
+            else {
+                return false;
+            }
+
+            return rowsAffected > 0;
+        }
     }
 
     @Override
@@ -128,6 +145,8 @@ public class ApartmentDao extends BaseDao<Apartment>{
             ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
+
+            apartmentDao.delete(27);
 
         } catch (SQLException e) {
             System.out.println(e);
