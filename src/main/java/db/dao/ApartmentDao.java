@@ -114,14 +114,12 @@ public class ApartmentDao extends BaseDao<Apartment>{
     private static Apartment getNextApartment(ResultSet resultSet) throws SQLException {
         return new Apartment(
                 resultSet.getInt("id"),
-                getAddress(resultSet),
+                resultSet.getString("street"),
+                resultSet.getInt("building"),
+                resultSet.getInt("number"),
                 resultSet.getInt("room_count"),
                 resultSet.getInt("area"),
                 resultSet.getInt("price"));
-    }
-
-    private static String getAddress(ResultSet resultSet) throws SQLException {
-        return  resultSet.getString("street") + " " + resultSet.getInt("building") + ", " + resultSet.getInt("number");
     }
 
 
@@ -130,8 +128,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
             ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
-            Apartment a = new Apartment(0,"", 0,0,0);
-            System.out.println(apartmentDao.delete(a));
+
         } catch (SQLException e) {
             System.out.println(e);
         }
