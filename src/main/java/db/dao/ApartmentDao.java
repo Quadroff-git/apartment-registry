@@ -17,7 +17,6 @@ public class ApartmentDao extends BaseDao<Apartment>{
             "FROM apartment\n" +
             "WHERE apartment.id = ?";
 
-
     private static final String SQL_DELETE_APARTMENT =
             "DELETE\n" +
             "FROM apartment\n" +
@@ -83,7 +82,12 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public boolean delete(int id) throws SQLException {
-        return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_APARTMENT)) {
+            preparedStatement.setInt(1, id);
+            int rowsDeleted = preparedStatement.executeUpdate();
+
+            return rowsDeleted > 0;
+        }
     }
 
     @Override
@@ -103,13 +107,17 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
 
     // Accepts a resultSet with cursor set to a non-empty row
-    private Apartment getNextApartment(ResultSet resultSet) throws SQLException{
+    private static Apartment getNextApartment(ResultSet resultSet) throws SQLException {
         return new Apartment(
                 resultSet.getInt("id"),
-                resultSet.getString("street") + " " + resultSet.getInt("building") + ", " + resultSet.getInt("number"),
+                getAddress(resultSet),
                 resultSet.getInt("room_count"),
                 resultSet.getInt("area"),
                 resultSet.getInt("price"));
+    }
+
+    private static String getAddress(ResultSet resultSet) throws SQLException {
+        return  resultSet.getString("street") + " " + resultSet.getInt("building") + ", " + resultSet.getInt("number");
     }
 
 
