@@ -92,7 +92,11 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public boolean delete(Apartment entity) throws SQLException{
-        return false;
+        if (entity.getId() == null) {
+            throw new IllegalArgumentException("Apartment id = null");
+        }
+
+        return delete(entity.getId());
     }
 
     @Override
@@ -126,7 +130,8 @@ public class ApartmentDao extends BaseDao<Apartment>{
             ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
-            System.out.println(apartmentDao.findById(16));
+            Apartment a = new Apartment(0,"", 0,0,0);
+            System.out.println(apartmentDao.delete(a));
         } catch (SQLException e) {
             System.out.println(e);
         }
