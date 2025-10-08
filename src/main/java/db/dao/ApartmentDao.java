@@ -35,12 +35,12 @@ public class ApartmentDao extends BaseDao<Apartment>{
     private static final String SQL_UPDATE_APARTMENT =
             "UPDATE apartment\n" +
             "SET \n" +
-            "apartment.room_count = ?\n" +
-            "apartment.area = ?\n" +
-            "apartment.price = ?\n" +
-            "apartment.street = ?\n" +
-            "apartment.building = ?\n" +
-            "apartment.number = ?\n" +
+            "room_count = ?,\n" +
+            "area = ?,\n" +
+            "price = ?,\n" +
+            "street = ?,\n" +
+            "building = ?,\n" +
+            "number = ?\n" +
             "WHERE\n" +
             "apartment.id = ?";
 
@@ -123,7 +123,22 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public Apartment update(Apartment entity) throws SQLException{
-        return null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
+            preparedStatement.setInt(1, entity.getRoomCount());
+            preparedStatement.setInt(2, entity.getArea());
+            preparedStatement.setInt(3, entity.getPrice());
+            preparedStatement.setString(4, entity.getStreet());
+            preparedStatement.setInt(5, entity.getBuilding());
+            preparedStatement.setInt(6, entity.getNumber());
+            preparedStatement.setInt(7, entity.getId());
+
+            if (preparedStatement.executeUpdate() > 0) {
+                return entity;
+            }
+            else {
+                return null;
+            }
+        }
     }
 
 
@@ -146,7 +161,13 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
 
-            apartmentDao.delete(27);
+            Apartment a = apartmentDao.findById(16);
+            a.setStreet("Жиновича");
+            a.setBuilding(1);
+            a.setNumber(122);
+            a.setRoomCount(2);
+
+            apartmentDao.update(a);
 
         } catch (SQLException e) {
             System.out.println(e);
