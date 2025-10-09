@@ -10,8 +10,8 @@ public class Main {
         try {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             ClientDao clientDao = new ClientDao(connectionManager.getConnection());
-
-            clientDao.delete(11);
+            Client c = new Client(1, "Павел", "+375257362291");
+            clientDao.update(c);
         } catch (SQLException e) {
             System.out.println(e);
         }

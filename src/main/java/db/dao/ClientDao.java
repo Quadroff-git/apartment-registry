@@ -28,6 +28,14 @@ public class ClientDao extends BaseDao<Client> {
             "phone)\n" +
             "VALUES (?, ?)";
 
+    private static final String SQL_UPDATE_CLIENT =
+            "UPDATE client c\n" +
+            "SET\n" +
+            "name = ?,\n" +
+            "phone = ?\n" +
+            "WHERE\n" +
+            "c.id = ?";
+
 
     public ClientDao(Connection connection) {
         super(connection);
@@ -109,7 +117,21 @@ public class ClientDao extends BaseDao<Client> {
 
     @Override
     public Client update(Client entity) throws SQLException {
-        return null;
+        if (entity == null) {
+            throw new NullPointerException("Client passed as argument is null");
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CLIENT)) {
+            insertClient(preparedStatement, entity);
+            preparedStatement.setInt(3, entity.getId());
+
+            if (preparedStatement.executeUpdate() > 0) {
+                return entity;
+            }
+            else {
+                return null;
+            }
+        }
     }
 
 
