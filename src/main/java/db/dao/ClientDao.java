@@ -97,4 +97,9 @@ public class ClientDao extends BaseDao<Client> {
                 resultSet.getString("phone")
         );
     }
+
+    private void insertClient(Client client, PreparedStatement preparedStatement) throws SQLException {
+        preparedStatement.setString(1, client.getFullName());
+        preparedStatement.setString(2, client.getPhoneNumber());
+    }
 }
