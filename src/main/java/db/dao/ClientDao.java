@@ -22,6 +22,12 @@ public class ClientDao extends BaseDao<Client> {
             "FROM client c\n" +
             "WHERE c.id = ?";
 
+    private static final String SQL_INSERT_CLIENT =
+            "INSERT INTO client\n" +
+            "(name,\n" +
+            "phone)\n" +
+            "VALUES (?, ?)";
+
 
     public ClientDao(Connection connection) {
         super(connection);
@@ -81,7 +87,24 @@ public class ClientDao extends BaseDao<Client> {
 
     @Override
     public boolean create(Client entity) throws SQLException {
-        return false;
+        if (entity == null) {
+            throw new NullPointerException("Client passed as argument is null");
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_CLIENT, Statement.RETURN_GENERATED_KEYS)) {
+            insertClient(preparedStatement, entity);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                entity.setId(resultSet.getInt(1));
+            }
+            else {
+                return false;
+            }
+
+            return rowsAffected > 0;
+        }
     }
 
     @Override
@@ -98,7 +121,7 @@ public class ClientDao extends BaseDao<Client> {
         );
     }
 
-    private void insertClient(Client client, PreparedStatement preparedStatement) throws SQLException {
+    private void insertClient(PreparedStatement preparedStatement, Client client) throws SQLException {
         preparedStatement.setString(1, client.getFullName());
         preparedStatement.setString(2, client.getPhoneNumber());
     }

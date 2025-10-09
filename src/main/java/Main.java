@@ -11,8 +11,7 @@ public class Main {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             ClientDao clientDao = new ClientDao(connectionManager.getConnection());
 
-
-            System.out.println(clientDao.findById(9));
+            clientDao.delete(11);
         } catch (SQLException e) {
             System.out.println(e);
         }
