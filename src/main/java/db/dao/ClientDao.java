@@ -3,10 +3,7 @@ package db.dao;
 
 import domain.Client;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -14,6 +11,12 @@ public class ClientDao extends BaseDao<Client> {
     private static final String SQL_SELECT_ALL_CLIENTS =
             "SELECT * \n" +
             "FROM client c ";
+
+    private static final String SQL_FIND_CLIENT_BY_ID =
+            "SELECT * \n" +
+            "FROM client c \n" +
+            "WHERE c.id = ?";
+
 
     public ClientDao(Connection connection) {
         super(connection);
@@ -36,7 +39,16 @@ public class ClientDao extends BaseDao<Client> {
 
     @Override
     public Client findById(int id) throws SQLException {
-        return null;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CLIENT_BY_ID)) {
+            preparedStatement.setInt(1, id);
+            ResultSet resultSet = preparedStatement.executeQuery();
+            if (resultSet.next()) {
+                return getNextClient(resultSet);
+            }
+            else {
+                return null;
+            }
+        }
     }
 
     @Override

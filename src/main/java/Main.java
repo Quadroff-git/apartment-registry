@@ -11,11 +11,8 @@ public class Main {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             ClientDao clientDao = new ClientDao(connectionManager.getConnection());
 
-            List<Client> clients = clientDao.getAll();
 
-            for (Client client : clients) {
-                System.out.println(client + "\n");
-            }
+            System.out.println(clientDao.findById(9));
         } catch (SQLException e) {
             System.out.println(e);
         }
