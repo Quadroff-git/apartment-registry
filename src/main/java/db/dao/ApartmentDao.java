@@ -2,7 +2,9 @@ package db.dao;
 
 import db.ConnectionManager;
 import domain.Apartment;
+import domain.PurchaseRequest;
 
+import javax.xml.transform.Result;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -43,6 +45,15 @@ public class ApartmentDao extends BaseDao<Apartment>{
             "number = ?\n" +
             "WHERE\n" +
             "apartment.id = ?";
+
+    private static final String SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST =
+            "SELECT * \n" +
+            "FROM apartment a\n" +
+            "WHERE \n" +
+            "a.room_count = ?\n" +
+            "AND (a.price BETWEEN ? AND ?)\n" +
+            "AND (a.area BETWEEN ? AND ?)\n";
+
 
 
     public ApartmentDao(Connection connection) {
@@ -130,6 +141,25 @@ public class ApartmentDao extends BaseDao<Apartment>{
         }
     }
 
+    public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws SQLException {
+        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST)) {
+            preparedStatement.setInt(1, purchaseRequest.getRoomCount());
+            preparedStatement.setInt(2, purchaseRequest.getMinPrice());
+            preparedStatement.setInt(3, purchaseRequest.getMaxPrice());
+            preparedStatement.setInt(4, purchaseRequest.getMinArea());
+            preparedStatement.setInt(5, purchaseRequest.getMaxArea());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            ArrayList<Apartment> apartments = new ArrayList<>();
+            while (resultSet.next()) {
+                apartments.add(getNextApartment(resultSet));
+            }
+
+            return apartments;
+        }
+    }
+
 
     // Accepts a resultSet with cursor set to a non-empty row
     private static Apartment getNextApartment(ResultSet resultSet) throws SQLException {
@@ -160,14 +190,13 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
             ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
 
-            Apartment a = apartmentDao.findById(16);
-            a.setStreet("Жиновича");
-            a.setBuilding(1);
-            a.setNumber(122);
-            a.setRoomCount(2);
+            PurchaseRequest pr = new PurchaseRequest(2, 40, 60, 6000000, 9000000, null);
 
-            apartmentDao.update(a);
+            List<Apartment> list = apartmentDao.findByPurchaseRequest(pr);
 
+            for (Apartment a : list) {
+                System.out.println(a + "\n");
+            }
         } catch (SQLException e) {
             System.out.println(e);
         }
