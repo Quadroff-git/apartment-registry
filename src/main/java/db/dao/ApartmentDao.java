@@ -4,7 +4,7 @@ import db.ConnectionManager;
 import domain.Apartment;
 import domain.PurchaseRequest;
 
-import javax.xml.transform.Result;
+
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
