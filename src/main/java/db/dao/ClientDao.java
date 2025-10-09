@@ -17,6 +17,11 @@ public class ClientDao extends BaseDao<Client> {
             "FROM client c \n" +
             "WHERE c.id = ?";
 
+    private static final String SQL_DELETE_CLIENT =
+            "DELETE \n" +
+            "FROM client c\n" +
+            "WHERE c.id = ?";
+
 
     public ClientDao(Connection connection) {
         super(connection);
@@ -53,12 +58,25 @@ public class ClientDao extends BaseDao<Client> {
 
     @Override
     public boolean delete(int id) throws SQLException {
-        return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_CLIENT)) {
+            preparedStatement.setInt(1, id);
+            int rowsDeleted = preparedStatement.executeUpdate();
+
+            return rowsDeleted > 0;
+        }
     }
 
     @Override
     public boolean delete(Client entity) throws SQLException {
-        return false;
+        if (entity == null) {
+            throw new NullPointerException("Client passed as argument is null");
+        }
+
+        if (entity.getId() == null) {
+            throw new IllegalArgumentException("Client id = null");
+        }
+
+        return delete(entity.getId());
     }
 
     @Override
