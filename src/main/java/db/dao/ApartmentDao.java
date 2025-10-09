@@ -87,7 +87,6 @@ public class ApartmentDao extends BaseDao<Apartment>{
                 return null;
             }
         }
-
     }
 
     @Override
@@ -102,6 +101,10 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public boolean delete(Apartment entity) throws SQLException{
+        if (entity == null) {
+            throw new NullPointerException("Apartment passed as argument is null");
+        }
+
         if (entity.getId() == null) {
             throw new IllegalArgumentException("Apartment id = null");
         }
@@ -111,6 +114,10 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public boolean create(Apartment entity) throws SQLException{
+        if (entity == null) {
+            throw new NullPointerException("Apartment passed as argument is null");
+        }
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
             insertApartment(preparedStatement, entity);
 
@@ -129,6 +136,10 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     @Override
     public Apartment update(Apartment entity) throws SQLException{
+        if (entity == null) {
+            throw new NullPointerException("Apartment passed as argument is null");
+        }
+
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
             insertApartment(preparedStatement, entity);
 
@@ -142,6 +153,10 @@ public class ApartmentDao extends BaseDao<Apartment>{
     }
 
     public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws SQLException {
+        if (purchaseRequest == null) {
+            throw new NullPointerException("PurchaseRequest passed as argument is null");
+        }
+
         try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST)) {
             preparedStatement.setInt(1, purchaseRequest.getRoomCount());
             preparedStatement.setInt(2, purchaseRequest.getMinPrice());
