@@ -197,25 +197,4 @@ public class ApartmentDao extends BaseDao<Apartment>{
         preparedStatement.setInt(6, entity.getNumber());
         preparedStatement.setInt(7, entity.getId());
     }
-
-
-    public static void main(String[] argv) {
-        try {
-            ConnectionManager conn = new ConnectionManager(argv[0], argv[1], argv[2]);
-
-            ApartmentDao apartmentDao = new ApartmentDao(conn.getConnection());
-
-            PurchaseRequest pr = new PurchaseRequest(2, 40, 60, 6000000, 9000000, null);
-
-            List<Apartment> list = apartmentDao.findByPurchaseRequest(pr);
-
-            for (Apartment a : list) {
-                System.out.println(a + "\n");
-            }
-        } catch (SQLException e) {
-            System.out.println(e);
-        }
-
-
-    }
 }
