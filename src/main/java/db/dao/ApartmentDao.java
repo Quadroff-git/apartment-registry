@@ -101,12 +101,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public boolean create(Apartment entity) throws SQLException{
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
-            preparedStatement.setInt(1, entity.getRoomCount());
-            preparedStatement.setInt(2, entity.getArea());
-            preparedStatement.setInt(3, entity.getPrice());
-            preparedStatement.setString(4, entity.getStreet());
-            preparedStatement.setInt(5, entity.getBuilding());
-            preparedStatement.setInt(6, entity.getNumber());
+            insertApartment(preparedStatement, entity);
 
             int rowsAffected = preparedStatement.executeUpdate();
             ResultSet resultSet = preparedStatement.getGeneratedKeys();
@@ -124,13 +119,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public Apartment update(Apartment entity) throws SQLException{
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
-            preparedStatement.setInt(1, entity.getRoomCount());
-            preparedStatement.setInt(2, entity.getArea());
-            preparedStatement.setInt(3, entity.getPrice());
-            preparedStatement.setString(4, entity.getStreet());
-            preparedStatement.setInt(5, entity.getBuilding());
-            preparedStatement.setInt(6, entity.getNumber());
-            preparedStatement.setInt(7, entity.getId());
+            insertApartment(preparedStatement, entity);
 
             if (preparedStatement.executeUpdate() > 0) {
                 return entity;
@@ -152,6 +141,16 @@ public class ApartmentDao extends BaseDao<Apartment>{
                 resultSet.getInt("room_count"),
                 resultSet.getInt("area"),
                 resultSet.getInt("price"));
+    }
+
+    private static void insertApartment(PreparedStatement preparedStatement, Apartment entity) throws SQLException {
+        preparedStatement.setInt(1, entity.getRoomCount());
+        preparedStatement.setInt(2, entity.getArea());
+        preparedStatement.setInt(3, entity.getPrice());
+        preparedStatement.setString(4, entity.getStreet());
+        preparedStatement.setInt(5, entity.getBuilding());
+        preparedStatement.setInt(6, entity.getNumber());
+        preparedStatement.setInt(7, entity.getId());
     }
 
 
