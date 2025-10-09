@@ -1,12 +1,20 @@
 package db.dao;
 
+
 import domain.Client;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
 import java.util.List;
 
 public class ClientDao extends BaseDao<Client> {
+    private static final String SQL_SELECT_ALL_CLIENTS =
+            "SELECT * \n" +
+            "FROM client c ";
+
     public ClientDao(Connection connection) {
         super(connection);
     }
@@ -14,7 +22,16 @@ public class ClientDao extends BaseDao<Client> {
 
     @Override
     public List<Client> getAll() throws SQLException {
-        return List.of();
+        ArrayList<Client> clients = new ArrayList<>();
+        try (Statement statement = connection.createStatement()) {
+            ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_CLIENTS);
+
+            while (resultSet.next()) {
+                clients.add(getNextClient(resultSet));
+            }
+        }
+
+        return clients;
     }
 
     @Override
@@ -40,5 +57,14 @@ public class ClientDao extends BaseDao<Client> {
     @Override
     public Client update(Client entity) throws SQLException {
         return null;
+    }
+
+
+    private Client getNextClient(ResultSet resultSet) throws SQLException {
+        return new Client(
+                resultSet.getInt("id"),
+                resultSet.getString("Name"),
+                resultSet.getString("phone")
+        );
     }
 }
