@@ -1,5 +1,6 @@
 package db.dao;
 
+import domain.Apartment;
 import domain.Client;
 import domain.PurchaseRequest;
 
@@ -42,6 +43,14 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             "max_price = ?,\n" +
             "client_id = ?\n" +
             "WHERE pr.id = ?";
+
+    private static final String SQL_FIND_PURCHASE_REQUEST_BY_APARTMENT =
+            "SELECT *\n" +
+            "FROM purchase_request pr\n" +
+            "WHERE \n" +
+            "pr.room_count = ?\n" +
+            "AND (? BETWEEN pr.min_area  AND pr.max_area) \n" +
+            "AND (? BETWEEN pr.min_price AND pr.max_price)";
 
 
     public PurchaseRequestDao(Connection connection) {
@@ -138,6 +147,27 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             else {
                 return null;
             }
+        }
+    }
+
+    public List<PurchaseRequest> findByApartment(Apartment apartment) throws SQLException {
+        if (apartment == null) {
+            throw new NullPointerException("Apartment passed as argument is null");
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PURCHASE_REQUEST_BY_APARTMENT)) {
+            preparedStatement.setInt(1, apartment.getRoomCount());
+            preparedStatement.setInt(2, apartment.getArea());
+            preparedStatement.setInt(3, apartment.getPrice());
+
+            ResultSet resultSet = preparedStatement.executeQuery();
+
+            ArrayList<PurchaseRequest> purchaseRequests = new ArrayList<PurchaseRequest>();
+            while (resultSet.next()) {
+                purchaseRequests.add(getNextPurchaseRequest(resultSet));
+            }
+
+            return purchaseRequests;
         }
     }
 

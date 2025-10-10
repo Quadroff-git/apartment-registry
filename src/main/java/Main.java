@@ -1,6 +1,7 @@
 import db.ConnectionManager;
 import db.dao.ClientDao;
 import db.dao.PurchaseRequestDao;
+import domain.Apartment;
 import domain.Client;
 import domain.PurchaseRequest;
 
@@ -12,10 +13,15 @@ public class Main {
         try {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao(connectionManager.getConnection());
-            ClientDao clientDao = new ClientDao(connectionManager.getConnection());
 
-            PurchaseRequest pr = new PurchaseRequest(11, 2, 69, 420, 69000, 4200000, clientDao.findById(1));
-            purchaseRequestDao.delete(pr);
+            Apartment a = new Apartment("", 1, 1, 2, 72, 8000000);
+
+            List<PurchaseRequest> pr = purchaseRequestDao.findByApartment(a);
+            for (PurchaseRequest p : pr) {
+                System.out.println(p + "\n");
+            }
+
+
 
         } catch (SQLException e) {
             System.out.println(e);
