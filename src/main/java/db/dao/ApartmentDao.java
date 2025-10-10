@@ -142,6 +142,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
             insertApartment(preparedStatement, entity);
+            preparedStatement.setInt(7, entity.getId());
 
             if (preparedStatement.executeUpdate() > 0) {
                 return entity;
@@ -195,6 +196,5 @@ public class ApartmentDao extends BaseDao<Apartment>{
         preparedStatement.setString(4, entity.getStreet());
         preparedStatement.setInt(5, entity.getBuilding());
         preparedStatement.setInt(6, entity.getNumber());
-        preparedStatement.setInt(7, entity.getId());
     }
 }
