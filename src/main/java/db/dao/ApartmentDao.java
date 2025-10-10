@@ -1,6 +1,5 @@
 package db.dao;
 
-import db.ConnectionManager;
 import domain.Apartment;
 import domain.PurchaseRequest;
 
