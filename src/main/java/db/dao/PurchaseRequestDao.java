@@ -8,14 +8,19 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
-    private static String SQL_SELECT_ALL_PURCHASE_REQUESTS =
+    private static final String SQL_SELECT_ALL_PURCHASE_REQUESTS =
             "SELECT * \n" +
             "FROM purchase_request pr";
 
-    private static String SQL_FIND_PURCHASE_REQUEST_BY_ID =
+    private static final String SQL_FIND_PURCHASE_REQUEST_BY_ID =
             "SELECT * \n" +
             "FROM purchase_request pr \n" +
             "WHERE id = ?";
+
+    private static final String SQL_DELETE_PURCHASE_REQUEST =
+            "DELETE\n" +
+            "FROM purchase_request \n" +
+            "WHERE purchase_request.id = ?";
 
 
     public PurchaseRequestDao(Connection connection) {
@@ -53,12 +58,25 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
     @Override
     public boolean delete(int id) throws SQLException {
-        return false;
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PURCHASE_REQUEST)) {
+            preparedStatement.setInt(1, id);
+            int rowsDeleted = preparedStatement.executeUpdate();
+
+            return rowsDeleted > 0;
+        }
     }
 
     @Override
     public boolean delete(PurchaseRequest entity) throws SQLException {
-        return false;
+        if (entity == null) {
+            throw new NullPointerException("Purchase request passed as argument is null");
+        }
+
+        if (entity.getId() == null) {
+            throw new IllegalArgumentException("Purchase request id = null");
+        }
+
+        return delete(entity.getId());
     }
 
     @Override
