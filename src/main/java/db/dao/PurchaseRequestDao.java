@@ -22,6 +22,16 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             "FROM purchase_request \n" +
             "WHERE purchase_request.id = ?";
 
+    private static final String SQL_INSERT_PURCHASE_REQUEST =
+            "INSERT INTO purchase_request \n" +
+            "(room_count,\n" +
+            "min_area,\n" +
+            "max_area,\n" +
+            "min_price,\n" +
+            "max_price,\n" +
+            "client_id)\n" +
+            "VALUES (?, ?, ?, ?, ?, ?)";
+
 
     public PurchaseRequestDao(Connection connection) {
         super(connection);
@@ -81,7 +91,28 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
     @Override
     public boolean create(PurchaseRequest entity) throws SQLException {
-        return false;
+        if (entity == null) {
+            throw new NullPointerException("Purchase request passed as argument is null");
+        }
+
+        if (entity.getClient().getId() == null) {
+            throw new NullPointerException("Client id = null. Insert client into db first");
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_PURCHASE_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
+            insertPurchaseRequest(preparedStatement, entity);
+
+            int rowsAffected = preparedStatement.executeUpdate();
+            ResultSet resultSet = preparedStatement.getGeneratedKeys();
+            if (resultSet.next()) {
+                entity.setId(resultSet.getInt(1));
+            }
+            else {
+                return false;
+            }
+
+            return rowsAffected > 0;
+        }
     }
 
     @Override
@@ -103,5 +134,14 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
                 // but to actually get full info it has to be loaded from db manually using ClientDao
                 new Client(resultSet.getInt("client_id"), "awaiting loading the full client info", "client id field is correct")
         );
+    }
+
+    private static void insertPurchaseRequest(PreparedStatement preparedStatement, PurchaseRequest purchaseRequest) throws SQLException {
+        preparedStatement.setInt(1, purchaseRequest.getRoomCount());
+        preparedStatement.setInt(2, purchaseRequest.getMinArea());
+        preparedStatement.setInt(3, purchaseRequest.getMaxArea());
+        preparedStatement.setInt(4, purchaseRequest.getMinPrice());
+        preparedStatement.setInt(5, purchaseRequest.getMaxPrice());
+        preparedStatement.setInt(6, purchaseRequest.getClient().getId());
     }
 }

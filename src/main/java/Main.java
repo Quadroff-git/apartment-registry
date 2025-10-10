@@ -12,14 +12,10 @@ public class Main {
         try {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao(connectionManager.getConnection());
+            ClientDao clientDao = new ClientDao(connectionManager.getConnection());
 
-
-            System.out.println(purchaseRequestDao.findById(6));
-//            List<PurchaseRequest> purchaseRequests = purchaseRequestDao.getAll();
-//
-//            for (PurchaseRequest pr : purchaseRequests) {
-//                System.out.println(pr + "\n");
-//            }
+            PurchaseRequest pr = new PurchaseRequest(11, 2, 69, 420, 69000, 4200000, clientDao.findById(1));
+            purchaseRequestDao.delete(pr);
 
         } catch (SQLException e) {
             System.out.println(e);
