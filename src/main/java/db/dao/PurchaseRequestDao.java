@@ -137,6 +137,10 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     }
 
     private static void insertPurchaseRequest(PreparedStatement preparedStatement, PurchaseRequest purchaseRequest) throws SQLException {
+        if (purchaseRequest.getClient().getId() == null) {
+            throw new NullPointerException("Client id = null. Insert client into db first");
+        }
+
         preparedStatement.setInt(1, purchaseRequest.getRoomCount());
         preparedStatement.setInt(2, purchaseRequest.getMinArea());
         preparedStatement.setInt(3, purchaseRequest.getMaxArea());
