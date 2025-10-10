@@ -13,11 +13,13 @@ public class Main {
             ConnectionManager connectionManager = new ConnectionManager(argv[0], argv[1], argv[2]);
             PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao(connectionManager.getConnection());
 
-            List<PurchaseRequest> purchaseRequests = purchaseRequestDao.getAll();
 
-            for (PurchaseRequest pr : purchaseRequests) {
-                System.out.println(pr + "\n");
-            }
+            System.out.println(purchaseRequestDao.findById(6));
+//            List<PurchaseRequest> purchaseRequests = purchaseRequestDao.getAll();
+//
+//            for (PurchaseRequest pr : purchaseRequests) {
+//                System.out.println(pr + "\n");
+//            }
 
         } catch (SQLException e) {
             System.out.println(e);
