@@ -101,7 +101,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public boolean delete(Apartment entity) throws SQLException{
         if (entity == null) {
-            throw new NullPointerException("Apartment passed as argument is null");
+            throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
         if (entity.getId() == null) {
@@ -114,7 +114,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public boolean create(Apartment entity) throws SQLException{
         if (entity == null) {
-            throw new NullPointerException("Apartment passed as argument is null");
+            throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
@@ -136,7 +136,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     @Override
     public Apartment update(Apartment entity) throws SQLException{
         if (entity == null) {
-            throw new NullPointerException("Apartment passed as argument is null");
+            throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
@@ -154,7 +154,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
     public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws SQLException {
         if (purchaseRequest == null) {
-            throw new NullPointerException("PurchaseRequest passed as argument is null");
+            throw new IllegalArgumentException("PurchaseRequest passed as argument is null");
         }
 
         try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST)) {

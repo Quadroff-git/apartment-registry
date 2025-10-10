@@ -99,7 +99,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     @Override
     public boolean delete(PurchaseRequest entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Purchase request passed as argument is null");
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
 
         if (entity.getId() == null) {
@@ -112,7 +112,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     @Override
     public boolean create(PurchaseRequest entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Purchase request passed as argument is null");
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_PURCHASE_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
@@ -134,7 +134,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     @Override
     public PurchaseRequest update(PurchaseRequest entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Purchase request passed as argument is null");
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PURCHASE_REQUEST)) {
@@ -152,7 +152,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
     public List<PurchaseRequest> findByApartment(Apartment apartment) throws SQLException {
         if (apartment == null) {
-            throw new NullPointerException("Apartment passed as argument is null");
+            throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PURCHASE_REQUEST_BY_APARTMENT)) {
@@ -189,7 +189,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
     private static void insertPurchaseRequest(PreparedStatement preparedStatement, PurchaseRequest purchaseRequest) throws SQLException {
         if (purchaseRequest.getClient().getId() == null) {
-            throw new NullPointerException("Client id = null. Insert client into db first");
+            throw new IllegalArgumentException("Client id = null. Insert client into db first");
         }
 
         preparedStatement.setInt(1, purchaseRequest.getRoomCount());

@@ -83,7 +83,7 @@ public class ClientDao extends BaseDao<Client> {
     @Override
     public boolean delete(Client entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Client passed as argument is null");
+            throw new IllegalArgumentException("Client passed as argument is null");
         }
 
         if (entity.getId() == null) {
@@ -96,7 +96,7 @@ public class ClientDao extends BaseDao<Client> {
     @Override
     public boolean create(Client entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Client passed as argument is null");
+            throw new IllegalArgumentException("Client passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_CLIENT, Statement.RETURN_GENERATED_KEYS)) {
@@ -118,7 +118,7 @@ public class ClientDao extends BaseDao<Client> {
     @Override
     public Client update(Client entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Client passed as argument is null");
+            throw new IllegalArgumentException("Client passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_CLIENT)) {
