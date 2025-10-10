@@ -32,6 +32,17 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             "client_id)\n" +
             "VALUES (?, ?, ?, ?, ?, ?)";
 
+    private static final String SQL_UPDATE_PURCHASE_REQUEST =
+            "UPDATE purchase_request pr \n" +
+            "SET\n" +
+            "room_count = ?,\n" +
+            "min_area = ?,\n" +
+            "max_area = ?,\n" +
+            "min_price = ?,\n" +
+            "max_price = ?,\n" +
+            "client_id = ?\n" +
+            "WHERE pr.id = ?";
+
 
     public PurchaseRequestDao(Connection connection) {
         super(connection);
@@ -95,10 +106,6 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             throw new NullPointerException("Purchase request passed as argument is null");
         }
 
-        if (entity.getClient().getId() == null) {
-            throw new NullPointerException("Client id = null. Insert client into db first");
-        }
-
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_PURCHASE_REQUEST, Statement.RETURN_GENERATED_KEYS)) {
             insertPurchaseRequest(preparedStatement, entity);
 
@@ -117,7 +124,21 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
     @Override
     public PurchaseRequest update(PurchaseRequest entity) throws SQLException {
-        return null;
+        if (entity == null) {
+            throw new NullPointerException("Apartment passed as argument is null");
+        }
+
+        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PURCHASE_REQUEST)) {
+            insertPurchaseRequest(preparedStatement, entity);
+            preparedStatement.setInt(7, entity.getId());
+
+            if (preparedStatement.executeUpdate() > 0) {
+                return entity;
+            }
+            else {
+                return null;
+            }
+        }
     }
 
 
