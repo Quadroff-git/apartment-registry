@@ -135,6 +135,7 @@ public class ClientDao extends BaseDao<Client> {
     }
 
 
+    // Assumes the resultSet is on a valid row(next() must be called at least once)
     private static Client getNextClient(ResultSet resultSet) throws SQLException {
         return new Client(
                 resultSet.getInt("id"),
@@ -143,6 +144,7 @@ public class ClientDao extends BaseDao<Client> {
         );
     }
 
+    // Assumes the columns and placeholders for their values are in a specific order
     private static void insertClient(PreparedStatement preparedStatement, Client client) throws SQLException {
         preparedStatement.setString(1, client.getFullName());
         preparedStatement.setString(2, client.getPhoneNumber());

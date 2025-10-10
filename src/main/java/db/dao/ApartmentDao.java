@@ -176,7 +176,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     }
 
 
-    // Accepts a resultSet with cursor set to a non-empty row
+    // Assumes the resultSet is on a valid row(next() must be called at least once)
     private static Apartment getNextApartment(ResultSet resultSet) throws SQLException {
         return new Apartment(
                 resultSet.getInt("id"),
@@ -188,6 +188,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
                 resultSet.getInt("price"));
     }
 
+    // Assumes the columns and placeholders for their values are in a specific order
     private static void insertApartment(PreparedStatement preparedStatement, Apartment entity) throws SQLException {
         preparedStatement.setInt(1, entity.getRoomCount());
         preparedStatement.setInt(2, entity.getArea());

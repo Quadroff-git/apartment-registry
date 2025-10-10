@@ -172,6 +172,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     }
 
 
+    // Assumes the resultSet is on a valid row(next() must be called at least once)
     private static PurchaseRequest getNextPurchaseRequest(ResultSet resultSet) throws SQLException {
         return new PurchaseRequest(
                 resultSet.getInt("id"),
@@ -187,6 +188,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
         );
     }
 
+    // Assumes the columns and placeholders for their values are in a specific order
     private static void insertPurchaseRequest(PreparedStatement preparedStatement, PurchaseRequest purchaseRequest) throws SQLException {
         if (purchaseRequest.getClient().getId() == null) {
             throw new IllegalArgumentException("Client id = null. Insert client into db first");
