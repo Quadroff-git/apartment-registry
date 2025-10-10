@@ -162,7 +162,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
             ResultSet resultSet = preparedStatement.executeQuery();
 
-            ArrayList<PurchaseRequest> purchaseRequests = new ArrayList<PurchaseRequest>();
+            ArrayList<PurchaseRequest> purchaseRequests = new ArrayList<>();
             while (resultSet.next()) {
                 purchaseRequests.add(getNextPurchaseRequest(resultSet));
             }
