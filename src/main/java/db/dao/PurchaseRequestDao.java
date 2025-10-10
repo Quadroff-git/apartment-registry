@@ -134,7 +134,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     @Override
     public PurchaseRequest update(PurchaseRequest entity) throws SQLException {
         if (entity == null) {
-            throw new NullPointerException("Apartment passed as argument is null");
+            throw new NullPointerException("Purchase request passed as argument is null");
         }
 
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_PURCHASE_REQUEST)) {
