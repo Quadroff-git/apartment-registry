@@ -135,7 +135,7 @@ public class ClientDao extends BaseDao<Client> {
     }
 
 
-    private Client getNextClient(ResultSet resultSet) throws SQLException {
+    private static Client getNextClient(ResultSet resultSet) throws SQLException {
         return new Client(
                 resultSet.getInt("id"),
                 resultSet.getString("Name"),
@@ -143,7 +143,7 @@ public class ClientDao extends BaseDao<Client> {
         );
     }
 
-    private void insertClient(PreparedStatement preparedStatement, Client client) throws SQLException {
+    private static void insertClient(PreparedStatement preparedStatement, Client client) throws SQLException {
         preparedStatement.setString(1, client.getFullName());
         preparedStatement.setString(2, client.getPhoneNumber());
     }
