@@ -2,6 +2,7 @@ package service;
 
 import db.ConnectionManager;
 
+import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BaseService<T> {
@@ -11,9 +12,9 @@ public abstract class BaseService<T> {
         this.connectionManager = connectionManager;
     }
 
-    public abstract List<T> getAll();
-    public abstract T getById(int id);
-    public abstract boolean create(T entity);
-    public abstract boolean delete(int id);
-    public abstract boolean update(T entity);
+    public abstract List<T> getAll() throws SQLException;
+    public abstract T getById(int id) throws SQLException;
+    public abstract boolean create(T entity) throws SQLException;
+    public abstract boolean delete(int id) throws SQLException;
+    public abstract boolean update(T entity) throws SQLException;
 }
