@@ -184,7 +184,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
                 // Lazy loading approach:
                 // right after loading from db client field contains a stub Client object. Its id is correct,
                 // but to actually get full info it has to be loaded from db manually using ClientDao
-                new Client(resultSet.getInt("client_id"), "awaiting loading the full client info", "client id field is correct")
+                new Client(resultSet.getInt("client_id"), null, null)
         );
     }
 
