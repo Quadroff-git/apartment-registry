@@ -2,6 +2,7 @@ package db.dao;
 
 
 import domain.Client;
+import domain.PurchaseRequest;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -127,6 +128,15 @@ public class ClientDao extends BaseDao<Client> {
                 return null;
             }
         }
+    }
+
+    // Used to lazy load Client objects into PurchaseRequest objects
+    public void loadClient(PurchaseRequest entity) throws SQLException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
+        }
+
+        entity.setClient(findById(entity.getClient().getId()));
     }
 
 
