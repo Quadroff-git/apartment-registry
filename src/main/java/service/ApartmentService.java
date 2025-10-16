@@ -2,7 +2,9 @@ package service;
 
 import db.ConnectionManager;
 import db.dao.ApartmentDao;
+import db.dao.PurchaseRequestDao;
 import domain.Apartment;
+import domain.PurchaseRequest;
 
 import java.sql.SQLException;
 import java.util.List;
@@ -54,6 +56,24 @@ public class ApartmentService extends BaseService<Apartment> {
 
         transactionManager.endTransaction();
         return res;
+    }
+
+    public List<PurchaseRequest> addWithCheck(Apartment entity) throws SQLException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Apartment passed as argument is null");
+        }
+
+        ApartmentDao apartmentDao = new ApartmentDao();
+        PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao();
+        transactionManager.initTransaction(apartmentDao, purchaseRequestDao);
+
+        List<PurchaseRequest> results = purchaseRequestDao.findByApartment(entity);
+        if (results.isEmpty()) {
+            apartmentDao.create(entity);
+        }
+
+        transactionManager.endTransaction();
+        return results;
     }
 
     @Override
