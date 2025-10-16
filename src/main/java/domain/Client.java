@@ -43,7 +43,8 @@ public class Client {
 
     @Override
     public String toString() {
-        return "Name: " + fullName +
-                "\nPhone number: " + phoneNumber;
+        return "ID: " + id +
+                "\nИмя: " + fullName +
+                "\nНомер телефона: " + phoneNumber;
     }
 }
