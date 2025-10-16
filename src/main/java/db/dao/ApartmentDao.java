@@ -54,12 +54,6 @@ public class ApartmentDao extends BaseDao<Apartment>{
             "AND (a.area BETWEEN ? AND ?)\n";
 
 
-
-    public ApartmentDao(Connection connection) {
-        super(connection);
-    }
-
-
     @Override
     public List<Apartment> getAll() throws SQLException {
         ArrayList<Apartment> apartments = new ArrayList<>();
