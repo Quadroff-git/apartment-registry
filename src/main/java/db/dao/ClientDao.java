@@ -37,11 +37,6 @@ public class ClientDao extends BaseDao<Client> {
             "c.id = ?";
 
 
-    public ClientDao(Connection connection) {
-        super(connection);
-    }
-
-
     @Override
     public List<Client> getAll() throws SQLException {
         ArrayList<Client> clients = new ArrayList<>();

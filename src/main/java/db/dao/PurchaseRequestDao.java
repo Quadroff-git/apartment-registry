@@ -53,11 +53,6 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             "AND (? BETWEEN pr.min_price AND pr.max_price)";
 
 
-    public PurchaseRequestDao(Connection connection) {
-        super(connection);
-    }
-
-
     @Override
     public List<PurchaseRequest> getAll() throws SQLException {
         ArrayList<PurchaseRequest> purchaseRequests = new ArrayList<>();
