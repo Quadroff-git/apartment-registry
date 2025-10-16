@@ -86,8 +86,9 @@ public class PurchaseRequest {
 
     @Override
     public String toString() {
-        return "Desired room count: " + roomCount +
-                "\nArea range: " + minArea + " - " + maxArea +
-                "\nPrice range: " + minPrice * 1.0 / 100 + " - " + maxPrice * 1.0 / 100 + " BYN";
+        return "ID: " + id +
+                "\nЖелаемое количество комнат: " + roomCount +
+                "\nДиапазон площади: " + minArea + " - " + maxArea +
+                "\nЦеновой диапазон: " + minPrice * 1.0 / 100 + " - " + maxPrice * 1.0 / 100 + " BYN";
     }
 }

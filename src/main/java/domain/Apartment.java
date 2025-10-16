@@ -86,9 +86,10 @@ public class Apartment {
 
     @Override
     public String toString() {
-        return "Address: " + street + " " + building + ", " + number +
-                "\nRoom count: " + roomCount +
-                "\nArea: " + area +
-                "\nPrice " + price * 1.0 / 100 + "BYN";
+        return "ID: " + id +
+                "\nАдрес: " + street + " " + building + ", " + number +
+                "\nКоличество комнат: " + roomCount +
+                "\nПлощадь: " + area +
+                "\nЦена " + price * 1.0 / 100 + "$";
     }
 }
