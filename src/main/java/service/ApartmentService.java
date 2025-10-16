@@ -1,10 +1,16 @@
 package service;
 
+import db.ConnectionManager;
 import domain.Apartment;
 
 import java.util.List;
 
 public class ApartmentService extends BaseService<Apartment> {
+
+    public ApartmentService(ConnectionManager connectionManager) {
+        super(connectionManager);
+    }
+
 
     @Override
     public List<Apartment> getAll() {
