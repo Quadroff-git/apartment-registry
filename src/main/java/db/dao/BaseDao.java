@@ -11,6 +11,10 @@ public abstract class BaseDao<T> {
         this.connection = connection;
     }
 
+    public void setConnection(Connection connection) {
+        this.connection = connection;
+    }
+
     public abstract List<T> getAll() throws SQLException;
     public abstract T findById(int id) throws SQLException;
     public abstract boolean delete(int id) throws SQLException;
