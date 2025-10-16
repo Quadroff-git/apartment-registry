@@ -1,15 +1,16 @@
 package service;
 
 import db.ConnectionManager;
+import db.dao.TransactionManager;
 
 import java.sql.SQLException;
 import java.util.List;
 
 public abstract class BaseService<T> {
-    protected ConnectionManager connectionManager;
+    protected TransactionManager transactionManager;
 
     public BaseService(ConnectionManager connectionManager) {
-        this.connectionManager = connectionManager;
+        this.transactionManager = new TransactionManager(connectionManager);
     }
 
     public abstract List<T> getAll() throws SQLException;
