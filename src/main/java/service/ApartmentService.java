@@ -52,11 +52,21 @@ public class ApartmentService extends BaseService<Apartment> {
 
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(apartmentDao);
+        try {
+            boolean res = apartmentDao.create(entity);
 
-        boolean res = apartmentDao.create(entity);
+            if (res) {
+                transactionManager.commit();
+            }
+            transactionManager.endTransaction();
 
-        transactionManager.endTransaction();
-        return res;
+            return res;
+        } catch (SQLException e) {
+            transactionManager.rollback();
+            transactionManager.endTransaction();
+            throw e;
+        }
+
     }
 
     public List<PurchaseRequest> createWithCheck(Apartment entity) throws SQLException {
@@ -71,7 +81,15 @@ public class ApartmentService extends BaseService<Apartment> {
 
         List<PurchaseRequest> results = purchaseRequestDao.findByApartment(entity);
         if (results.isEmpty()) {
-            apartmentDao.create(entity);
+            try {
+                if (apartmentDao.create(entity)) {
+                    transactionManager.commit();
+                }
+            } catch (SQLException e) {
+                transactionManager.rollback();
+                transactionManager.endTransaction();
+                throw e;
+            }
         }
         else {
             for (PurchaseRequest pr : results) {
@@ -91,11 +109,20 @@ public class ApartmentService extends BaseService<Apartment> {
 
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(apartmentDao);
+        try {
+            boolean res = apartmentDao.delete(id);
 
-        boolean res = apartmentDao.delete(id);
+            if (res) {
+                transactionManager.commit();
+            }
+            transactionManager.endTransaction();
 
-        transactionManager.endTransaction();
-        return res;
+            return res;
+        } catch (SQLException e) {
+            transactionManager.rollback();
+            transactionManager.endTransaction();
+            throw e;
+        }
     }
 
     @Override
@@ -106,10 +133,19 @@ public class ApartmentService extends BaseService<Apartment> {
 
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(apartmentDao);
+        try {
+            boolean res = (apartmentDao.update(entity) != null);
 
-        boolean res = (apartmentDao.update(entity) != null);
+            if (res) {
+                transactionManager.commit();
+            }
+            transactionManager.endTransaction();
 
-        transactionManager.endTransaction();
-        return res;
+            return res;
+        } catch (SQLException e) {
+            transactionManager.rollback();
+            transactionManager.endTransaction();
+            throw e;
+        }
     }
 }
