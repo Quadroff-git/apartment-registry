@@ -74,22 +74,16 @@ public class ApartmentService extends BaseService<Apartment> {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
-        ApartmentDao apartmentDao = new ApartmentDao();
         PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao();
         ClientDao clientDao = new ClientDao();
-        transactionManager.initTransaction(apartmentDao, purchaseRequestDao, clientDao);
+        transactionManager.initTransaction(purchaseRequestDao, clientDao);
 
         List<PurchaseRequest> results = purchaseRequestDao.findByApartment(entity);
+
         if (results.isEmpty()) {
-            try {
-                if (apartmentDao.create(entity)) {
-                    transactionManager.commit();
-                }
-            } catch (SQLException e) {
-                transactionManager.rollback();
-                transactionManager.endTransaction();
-                throw e;
-            }
+            if(!create(entity)) {
+                throw new RuntimeException("Create failed");
+            };
         }
         else {
             for (PurchaseRequest pr : results) {
