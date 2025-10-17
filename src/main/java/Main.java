@@ -1,6 +1,8 @@
 import db.ConnectionManager;
 import domain.Apartment;
+import domain.PurchaseRequest;
 import service.ApartmentService;
+import service.PurchaseRequestService;
 
 import java.sql.SQLException;
 
@@ -8,10 +10,10 @@ public class Main {
     public static void main(String[] argv) {
         try {
             ConnectionManager cm = new ConnectionManager(argv[0], argv[1], argv[2]);
-            ApartmentService as = new ApartmentService(cm);
-            Apartment a = new Apartment("street", 1, 1, 2, 67, 9100000);
-            var res = as.createWithCheck(a);
-            res.forEach(pr -> System.out.println(pr + "\n"));
+            PurchaseRequestService prs = new PurchaseRequestService(cm);
+            PurchaseRequest pr = prs.getById(10);
+            pr.setRoomCount(1);
+            System.out.println(prs.update(pr));
 
         } catch (SQLException e) {
             System.out.println(e);
