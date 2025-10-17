@@ -1,7 +1,7 @@
 package service;
 
 import db.ConnectionManager;
-import db.dao.TransactionManager;
+import db.TransactionManager;
 
 import java.sql.SQLException;
 import java.util.List;
