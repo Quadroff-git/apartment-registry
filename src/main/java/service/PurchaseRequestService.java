@@ -92,6 +92,27 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
         }
     }
 
+    public List<Apartment> createWithCheck(PurchaseRequest entity) throws SQLException {
+        if (entity == null) {
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
+        }
+
+        PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao();
+        ApartmentDao apartmentDao = new ApartmentDao();
+        transactionManager.initTransaction(purchaseRequestDao, apartmentDao);
+
+        List<Apartment> results = apartmentDao.findByPurchaseRequest(entity);
+        transactionManager.endTransaction();
+
+        if (results.isEmpty()) {
+            if (!create(entity)) {
+                throw new RuntimeException("Create failed");
+            }
+        }
+
+        return results;
+    }
+
     @Override
     public boolean delete(int id) throws SQLException {
         if (id < 0) {
@@ -119,7 +140,7 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
     @Override
     public boolean update(PurchaseRequest entity) throws SQLException {
         if (entity == null) {
-            throw new IllegalArgumentException("Apartment passed as argument is null");
+            throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
 
         PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao();
