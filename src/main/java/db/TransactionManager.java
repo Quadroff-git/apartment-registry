@@ -1,6 +1,6 @@
-package db.dao;
+package db;
 
-import db.ConnectionManager;
+import db.dao.BaseDao;
 
 import java.sql.Connection;
 import java.sql.SQLException;
