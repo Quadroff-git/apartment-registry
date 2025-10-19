@@ -1,6 +1,7 @@
 import db.ConnectionManager;
 import domain.Apartment;
 import domain.PurchaseRequest;
+import presentation.GUI;
 import service.ApartmentService;
 import service.PurchaseRequestService;
 
@@ -10,12 +11,10 @@ public class Main {
     public static void main(String[] argv) {
         try {
             ConnectionManager cm = new ConnectionManager(argv[0], argv[1], argv[2]);
-            PurchaseRequestService prs = new PurchaseRequestService(cm);
-            PurchaseRequest pr = prs.getById(10);
-            pr.setRoomCount(1);
-            System.out.println(prs.update(pr));
+            GUI gui = new GUI(cm);
+            gui.start();
 
-        } catch (SQLException e) {
+        } catch (Exception e) {
             System.out.println(e);
         }
     }
