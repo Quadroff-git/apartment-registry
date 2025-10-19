@@ -2,10 +2,10 @@ package service;
 
 import db.ConnectionManager;
 import db.dao.ClientDao;
+import db.dao.DaoException;
 import domain.Client;
 
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ClientService extends BaseService<Client> {
@@ -15,18 +15,23 @@ public class ClientService extends BaseService<Client> {
     } 
     
     @Override
-    public List<Client> getAll() throws SQLException {
+    public List<Client> getAll() throws ServiceException {
         ClientDao clientDao = new ClientDao();
         transactionManager.initTransaction(clientDao, clientDao);
 
-        List<Client> clients = clientDao.getAll();
+        List<Client> clients = null;
+        try {
+            clients = clientDao.getAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         transactionManager.endTransaction();
         return clients;
     }
 
     @Override
-    public Client getById(int id) throws SQLException {
+    public Client getById(int id) throws ServiceException {
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -34,14 +39,19 @@ public class ClientService extends BaseService<Client> {
         ClientDao ClientDao = new ClientDao();
         transactionManager.initTransaction(ClientDao);
 
-        Client Client = ClientDao.findById(id);
+        Client Client = null;
+        try {
+            Client = ClientDao.findById(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         transactionManager.endTransaction();
         return Client;
     }
 
     @Override
-    public boolean create(Client entity) throws SQLException {
+    public boolean create(Client entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Client passed as argument is null");
         }
@@ -57,15 +67,15 @@ public class ClientService extends BaseService<Client> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) throws ServiceException {
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -81,15 +91,15 @@ public class ClientService extends BaseService<Client> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean update(Client entity) throws SQLException {
+    public boolean update(Client entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Client passed as argument is null");
         }
@@ -105,10 +115,10 @@ public class ClientService extends BaseService<Client> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 }
