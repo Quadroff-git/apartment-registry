@@ -3,11 +3,11 @@ package service;
 import db.ConnectionManager;
 import db.dao.ApartmentDao;
 import db.dao.ClientDao;
+import db.dao.DaoException;
 import db.dao.PurchaseRequestDao;
 import domain.Apartment;
 import domain.PurchaseRequest;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class PurchaseRequestService extends BaseService<PurchaseRequest> {
@@ -17,14 +17,19 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
     }
 
     @Override
-    public List<PurchaseRequest> getAll() throws SQLException {
+    public List<PurchaseRequest> getAll() throws ServiceException {
         PurchaseRequestDao purchaseRequestDao = new PurchaseRequestDao();
         ClientDao clientDao = new ClientDao();
         transactionManager.initTransaction(purchaseRequestDao, clientDao);
 
-        List<PurchaseRequest> purchaseRequests = purchaseRequestDao.getAll();
-        for (PurchaseRequest pr : purchaseRequests) {
-            clientDao.loadClient(pr);
+        List<PurchaseRequest> purchaseRequests = null;
+        try {
+            purchaseRequests = purchaseRequestDao.getAll();
+            for (PurchaseRequest pr : purchaseRequests) {
+                clientDao.loadClient(pr);
+            }
+        } catch (DaoException e) {
+            throw new ServiceException(e);
         }
 
         transactionManager.endTransaction();
@@ -32,7 +37,7 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
     }
 
     @Override
-    public PurchaseRequest getById(int id) throws SQLException {
+    public PurchaseRequest getById(int id) throws ServiceException {
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -41,15 +46,20 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
         ClientDao clientDao = new ClientDao();
         transactionManager.initTransaction(purchaseRequestDao, clientDao);
 
-        PurchaseRequest purchaseRequest = purchaseRequestDao.findById(id);
-        clientDao.loadClient(purchaseRequest);
+        PurchaseRequest purchaseRequest = null;
+        try {
+            purchaseRequest = purchaseRequestDao.findById(id);
+            clientDao.loadClient(purchaseRequest);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         transactionManager.endTransaction();
         return purchaseRequest;
     }
 
     @Override
-    public boolean create(PurchaseRequest entity) throws SQLException {
+    public boolean create(PurchaseRequest entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -69,10 +79,10 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
                 transactionManager.endTransaction();
 
                 return res;
-            } catch (SQLException e) {
+            } catch (DaoException e) {
                 transactionManager.rollback();
                 transactionManager.endTransaction();
-                throw e;
+                throw new ServiceException(e);
             }
         } else {
             try {
@@ -84,15 +94,15 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
                 transactionManager.endTransaction();
 
                 return res;
-            } catch (SQLException e) {
+            } catch (DaoException e) {
                 transactionManager.rollback();
                 transactionManager.endTransaction();
-                throw e;
+                throw new ServiceException(e);
             }
         }
     }
 
-    public List<Apartment> createWithCheck(PurchaseRequest entity) throws SQLException {
+    public List<Apartment> createWithCheck(PurchaseRequest entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -101,7 +111,12 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(purchaseRequestDao, apartmentDao);
 
-        List<Apartment> results = apartmentDao.findByPurchaseRequest(entity);
+        List<Apartment> results = null;
+        try {
+            results = apartmentDao.findByPurchaseRequest(entity);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
         transactionManager.endTransaction();
 
         if (results.isEmpty()) {
@@ -114,7 +129,7 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) throws ServiceException {
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -130,15 +145,15 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean update(PurchaseRequest entity) throws SQLException {
+    public boolean update(PurchaseRequest entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -155,10 +170,10 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 }
