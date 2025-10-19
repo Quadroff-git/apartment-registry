@@ -55,45 +55,58 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
 
     @Override
-    public List<Apartment> getAll() throws SQLException {
+    public List<Apartment> getAll() throws DaoException {
         ArrayList<Apartment> apartments = new ArrayList<>();
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_APARTMENTS);
+        try {
+            try (Statement statement = connection.createStatement()) {
+                ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_APARTMENTS);
 
-            while (resultSet.next()) {
-                apartments.add(getNextApartment(resultSet));
+                while (resultSet.next()) {
+                    apartments.add(getNextApartment(resultSet));
+                }
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
+
 
         return apartments;
     }
 
     @Override
-    public Apartment findById(int id) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_ID)) {
-            preparedStatement.setInt(1, id);
-            ResultSet resultSet = preparedStatement.executeQuery();
-            if (resultSet.next()) {
-                return getNextApartment(resultSet);
+    public Apartment findById(int id) throws DaoException {
+        try {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_ID)) {
+                preparedStatement.setInt(1, id);
+                ResultSet resultSet = preparedStatement.executeQuery();
+                if (resultSet.next()) {
+                    return getNextApartment(resultSet);
+                }
+                else {
+                    return null;
+                }
             }
-            else {
-                return null;
-            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_APARTMENT)) {
-            preparedStatement.setInt(1, id);
-            int rowsDeleted = preparedStatement.executeUpdate();
+    public boolean delete(int id) throws DaoException {
+        try {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_APARTMENT)) {
+                preparedStatement.setInt(1, id);
+                int rowsDeleted = preparedStatement.executeUpdate();
 
-            return rowsDeleted > 0;
+                return rowsDeleted > 0;
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(Apartment entity) throws SQLException{
+    public boolean delete(Apartment entity) throws DaoException{
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -106,66 +119,78 @@ public class ApartmentDao extends BaseDao<Apartment>{
     }
 
     @Override
-    public boolean create(Apartment entity) throws SQLException{
+    public boolean create(Apartment entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
-            insertApartment(preparedStatement, entity);
+        try {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_INSERT_APARTMENT, Statement.RETURN_GENERATED_KEYS)) {
+                insertApartment(preparedStatement, entity);
 
-            int rowsAffected = preparedStatement.executeUpdate();
-            ResultSet resultSet = preparedStatement.getGeneratedKeys();
-            if (resultSet.next()) {
-                entity.setId(resultSet.getInt(1));
-            }
-            else {
-                return false;
-            }
+                int rowsAffected = preparedStatement.executeUpdate();
+                ResultSet resultSet = preparedStatement.getGeneratedKeys();
+                if (resultSet.next()) {
+                    entity.setId(resultSet.getInt(1));
+                }
+                else {
+                    return false;
+                }
 
-            return rowsAffected > 0;
+                return rowsAffected > 0;
+            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public Apartment update(Apartment entity) throws SQLException{
+    public Apartment update(Apartment entity) throws DaoException{
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
 
-        try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
-            insertApartment(preparedStatement, entity);
-            preparedStatement.setInt(7, entity.getId());
+        try {
+            try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_UPDATE_APARTMENT)) {
+                insertApartment(preparedStatement, entity);
+                preparedStatement.setInt(7, entity.getId());
 
-            if (preparedStatement.executeUpdate() > 0) {
-                return entity;
+                if (preparedStatement.executeUpdate() > 0) {
+                    return entity;
+                }
+                else {
+                    return null;
+                }
             }
-            else {
-                return null;
-            }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
-    public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws SQLException {
+    public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws DaoException {
         if (purchaseRequest == null) {
             throw new IllegalArgumentException("PurchaseRequest passed as argument is null");
         }
 
-        try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST)) {
-            preparedStatement.setInt(1, purchaseRequest.getRoomCount());
-            preparedStatement.setInt(2, purchaseRequest.getMinPrice());
-            preparedStatement.setInt(3, purchaseRequest.getMaxPrice());
-            preparedStatement.setInt(4, purchaseRequest.getMinArea());
-            preparedStatement.setInt(5, purchaseRequest.getMaxArea());
+        try {
+            try(PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_PURCHASE_REQUEST)) {
+                preparedStatement.setInt(1, purchaseRequest.getRoomCount());
+                preparedStatement.setInt(2, purchaseRequest.getMinPrice());
+                preparedStatement.setInt(3, purchaseRequest.getMaxPrice());
+                preparedStatement.setInt(4, purchaseRequest.getMinArea());
+                preparedStatement.setInt(5, purchaseRequest.getMaxArea());
 
-            ResultSet resultSet = preparedStatement.executeQuery();
+                ResultSet resultSet = preparedStatement.executeQuery();
 
-            ArrayList<Apartment> apartments = new ArrayList<>();
-            while (resultSet.next()) {
-                apartments.add(getNextApartment(resultSet));
+                ArrayList<Apartment> apartments = new ArrayList<>();
+                while (resultSet.next()) {
+                    apartments.add(getNextApartment(resultSet));
+                }
+
+                return apartments;
             }
-
-            return apartments;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
