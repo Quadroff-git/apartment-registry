@@ -54,7 +54,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
 
 
     @Override
-    public List<PurchaseRequest> getAll() throws SQLException {
+    public List<PurchaseRequest> getAll() throws DaoException {
         ArrayList<PurchaseRequest> purchaseRequests = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_PURCHASE_REQUESTS);
@@ -62,13 +62,15 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             while (resultSet.next()) {
                 purchaseRequests.add(getNextPurchaseRequest(resultSet));
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
 
         return purchaseRequests;
     }
 
     @Override
-    public PurchaseRequest findById(int id) throws SQLException {
+    public PurchaseRequest findById(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_PURCHASE_REQUEST_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -78,21 +80,25 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_PURCHASE_REQUEST)) {
             preparedStatement.setInt(1, id);
             int rowsDeleted = preparedStatement.executeUpdate();
 
             return rowsDeleted > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(PurchaseRequest entity) throws SQLException {
+    public boolean delete(PurchaseRequest entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -105,7 +111,7 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
     }
 
     @Override
-    public boolean create(PurchaseRequest entity) throws SQLException {
+    public boolean create(PurchaseRequest entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -123,11 +129,13 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             }
 
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public PurchaseRequest update(PurchaseRequest entity) throws SQLException {
+    public PurchaseRequest update(PurchaseRequest entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
@@ -142,10 +150,12 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
-    public List<PurchaseRequest> findByApartment(Apartment apartment) throws SQLException {
+    public List<PurchaseRequest> findByApartment(Apartment apartment) throws DaoException {
         if (apartment == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -163,6 +173,8 @@ public class PurchaseRequestDao extends BaseDao<PurchaseRequest> {
             }
 
             return purchaseRequests;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 

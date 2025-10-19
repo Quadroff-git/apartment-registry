@@ -11,10 +11,10 @@ public abstract class BaseDao<T> {
         this.connection = connection;
     }
 
-    public abstract List<T> getAll() throws SQLException;
-    public abstract T findById(int id) throws SQLException;
-    public abstract boolean delete(int id) throws SQLException;
-    public abstract boolean delete(T entity) throws SQLException;
-    public abstract boolean create(T entity) throws SQLException;
-    public abstract T update(T entity) throws SQLException;
+    public abstract List<T> getAll() throws DaoException;
+    public abstract T findById(int id) throws DaoException;
+    public abstract boolean delete(int id) throws DaoException;
+    public abstract boolean delete(T entity) throws DaoException;
+    public abstract boolean create(T entity) throws DaoException;
+    public abstract T update(T entity) throws DaoException;
 }
