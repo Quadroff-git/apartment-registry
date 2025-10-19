@@ -55,21 +55,25 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
 
     @Override
-    public List<Apartment> getAll() throws SQLException {
+    public List<Apartment> getAll() throws DaoException {
         ArrayList<Apartment> apartments = new ArrayList<>();
+
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_APARTMENTS);
 
             while (resultSet.next()) {
                 apartments.add(getNextApartment(resultSet));
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
+
 
         return apartments;
     }
 
     @Override
-    public Apartment findById(int id) throws SQLException {
+    public Apartment findById(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_APARTMENT_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -79,21 +83,25 @@ public class ApartmentDao extends BaseDao<Apartment>{
             else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_APARTMENT)) {
             preparedStatement.setInt(1, id);
             int rowsDeleted = preparedStatement.executeUpdate();
 
             return rowsDeleted > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(Apartment entity) throws SQLException{
+    public boolean delete(Apartment entity) throws DaoException{
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -106,7 +114,7 @@ public class ApartmentDao extends BaseDao<Apartment>{
     }
 
     @Override
-    public boolean create(Apartment entity) throws SQLException{
+    public boolean create(Apartment entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -124,11 +132,13 @@ public class ApartmentDao extends BaseDao<Apartment>{
             }
 
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public Apartment update(Apartment entity) throws SQLException{
+    public Apartment update(Apartment entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -139,14 +149,16 @@ public class ApartmentDao extends BaseDao<Apartment>{
 
             if (preparedStatement.executeUpdate() > 0) {
                 return entity;
-            }
-            else {
+            } else {
                 return null;
             }
+
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
-    public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws SQLException {
+    public List<Apartment> findByPurchaseRequest(PurchaseRequest purchaseRequest) throws DaoException {
         if (purchaseRequest == null) {
             throw new IllegalArgumentException("PurchaseRequest passed as argument is null");
         }
@@ -166,6 +178,9 @@ public class ApartmentDao extends BaseDao<Apartment>{
             }
 
             return apartments;
+        }
+        catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 

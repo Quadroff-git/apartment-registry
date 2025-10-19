@@ -39,7 +39,7 @@ public class ClientDao extends BaseDao<Client> {
 
 
     @Override
-    public List<Client> getAll() throws SQLException {
+    public List<Client> getAll() throws DaoException {
         ArrayList<Client> clients = new ArrayList<>();
         try (Statement statement = connection.createStatement()) {
             ResultSet resultSet = statement.executeQuery(SQL_SELECT_ALL_CLIENTS);
@@ -47,13 +47,15 @@ public class ClientDao extends BaseDao<Client> {
             while (resultSet.next()) {
                 clients.add(getNextClient(resultSet));
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
 
         return clients;
     }
 
     @Override
-    public Client findById(int id) throws SQLException {
+    public Client findById(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_FIND_CLIENT_BY_ID)) {
             preparedStatement.setInt(1, id);
             ResultSet resultSet = preparedStatement.executeQuery();
@@ -63,21 +65,25 @@ public class ClientDao extends BaseDao<Client> {
             else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(int id) throws SQLException {
+    public boolean delete(int id) throws DaoException {
         try (PreparedStatement preparedStatement = connection.prepareStatement(SQL_DELETE_CLIENT)) {
             preparedStatement.setInt(1, id);
             int rowsDeleted = preparedStatement.executeUpdate();
 
             return rowsDeleted > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public boolean delete(Client entity) throws SQLException {
+    public boolean delete(Client entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Client passed as argument is null");
         }
@@ -90,7 +96,7 @@ public class ClientDao extends BaseDao<Client> {
     }
 
     @Override
-    public boolean create(Client entity) throws SQLException {
+    public boolean create(Client entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Client passed as argument is null");
         }
@@ -108,11 +114,13 @@ public class ClientDao extends BaseDao<Client> {
             }
 
             return rowsAffected > 0;
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     @Override
-    public Client update(Client entity) throws SQLException {
+    public Client update(Client entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Client passed as argument is null");
         }
@@ -127,11 +135,13 @@ public class ClientDao extends BaseDao<Client> {
             else {
                 return null;
             }
+        } catch (SQLException e) {
+            throw new DaoException(e);
         }
     }
 
     // Used to lazy load Client objects into PurchaseRequest objects
-    public void loadClient(PurchaseRequest entity) throws SQLException {
+    public void loadClient(PurchaseRequest entity) throws DaoException {
         if (entity == null) {
             throw new IllegalArgumentException("Purchase request passed as argument is null");
         }
