@@ -3,11 +3,11 @@ package service;
 import db.ConnectionManager;
 import db.dao.ApartmentDao;
 import db.dao.ClientDao;
+import db.dao.DaoException;
 import db.dao.PurchaseRequestDao;
 import domain.Apartment;
 import domain.PurchaseRequest;
 
-import java.sql.SQLException;
 import java.util.List;
 
 public class ApartmentService extends BaseService<Apartment> {
@@ -18,11 +18,16 @@ public class ApartmentService extends BaseService<Apartment> {
 
 
     @Override
-    public List<Apartment> getAll() throws SQLException {
+    public List<Apartment> getAll() throws ServiceException {
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(apartmentDao);
 
-        List<Apartment> apartments = apartmentDao.getAll();
+        List<Apartment> apartments = null;
+        try {
+            apartments = apartmentDao.getAll();
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         transactionManager.endTransaction();
 
@@ -30,7 +35,7 @@ public class ApartmentService extends BaseService<Apartment> {
     }
 
     @Override
-    public Apartment getById(int id) throws SQLException {
+    public Apartment getById(int id) throws ServiceException {
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -38,14 +43,19 @@ public class ApartmentService extends BaseService<Apartment> {
         ApartmentDao apartmentDao = new ApartmentDao();
         transactionManager.initTransaction(apartmentDao);
 
-        Apartment apartment = apartmentDao.findById(id);
+        Apartment apartment = null;
+        try {
+            apartment = apartmentDao.findById(id);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         transactionManager.endTransaction();
         return apartment;
     }
 
     @Override
-    public boolean create(Apartment entity) throws SQLException{
+    public boolean create(Apartment entity) throws ServiceException{
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -61,15 +71,15 @@ public class ApartmentService extends BaseService<Apartment> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
 
     }
 
-    public List<PurchaseRequest> createWithCheck(Apartment entity) throws SQLException {
+    public List<PurchaseRequest> createWithCheck(Apartment entity) throws ServiceException {
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -78,16 +88,25 @@ public class ApartmentService extends BaseService<Apartment> {
         ClientDao clientDao = new ClientDao();
         transactionManager.initTransaction(purchaseRequestDao, clientDao);
 
-        List<PurchaseRequest> results = purchaseRequestDao.findByApartment(entity);
+        List<PurchaseRequest> results = null;
+        try {
+            results = purchaseRequestDao.findByApartment(entity);
+        } catch (DaoException e) {
+            throw new ServiceException(e);
+        }
 
         if (results.isEmpty()) {
             if(!create(entity)) {
-                throw new RuntimeException("Create failed");
+                throw new ServiceException("Create failed");
             };
         }
         else {
             for (PurchaseRequest pr : results) {
-                clientDao.loadClient(pr);
+                try {
+                    clientDao.loadClient(pr);
+                } catch (DaoException e) {
+                    throw new ServiceException(e);
+                }
             }
         }
 
@@ -96,7 +115,7 @@ public class ApartmentService extends BaseService<Apartment> {
     }
 
     @Override
-    public boolean delete(int id) throws SQLException{
+    public boolean delete(int id) throws ServiceException{
         if (id < 0) {
             throw new IllegalArgumentException("id can't be negative");
         }
@@ -112,15 +131,15 @@ public class ApartmentService extends BaseService<Apartment> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 
     @Override
-    public boolean update(Apartment entity) throws SQLException{
+    public boolean update(Apartment entity) throws ServiceException{
         if (entity == null) {
             throw new IllegalArgumentException("Apartment passed as argument is null");
         }
@@ -136,10 +155,10 @@ public class ApartmentService extends BaseService<Apartment> {
             transactionManager.endTransaction();
 
             return res;
-        } catch (SQLException e) {
+        } catch (DaoException e) {
             transactionManager.rollback();
             transactionManager.endTransaction();
-            throw e;
+            throw new ServiceException(e);
         }
     }
 }
