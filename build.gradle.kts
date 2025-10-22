@@ -26,6 +26,9 @@ tasks.withType<CreateStartScripts> {
 @rem Command line arguments for db connection
 @rem Format: url user password
 set DEFAULT_ARGS=jdbc:postgresql:apartment_registry postgres root
+
+@rem Set UTF-8 encoding for Russian text
+chcp 65001 > nul
 """
         )
 
