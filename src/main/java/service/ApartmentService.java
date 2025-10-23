@@ -97,6 +97,7 @@ public class ApartmentService extends BaseService<Apartment> {
                 if(!apartmentDao.create(entity)) {
                     throw new ServiceException("Create failed");
                 };
+                transactionManager.commit();
             }
             else {
                 for (PurchaseRequest pr : results) {

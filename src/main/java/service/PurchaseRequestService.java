@@ -119,7 +119,9 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
                 if (!purchaseRequestDao.create(entity)) {
                     throw new RuntimeException("Create failed");
                 }
+                transactionManager.commit();
             }
+
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
