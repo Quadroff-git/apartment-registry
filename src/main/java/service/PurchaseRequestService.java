@@ -114,16 +114,16 @@ public class PurchaseRequestService extends BaseService<PurchaseRequest> {
         List<Apartment> results = null;
         try {
             results = apartmentDao.findByPurchaseRequest(entity);
+
+            if (results.isEmpty()) {
+                if (!purchaseRequestDao.create(entity)) {
+                    throw new RuntimeException("Create failed");
+                }
+            }
         } catch (DaoException e) {
             throw new ServiceException(e);
         }
         transactionManager.endTransaction();
-
-        if (results.isEmpty()) {
-            if (!create(entity)) {
-                throw new RuntimeException("Create failed");
-            }
-        }
 
         return results;
     }
