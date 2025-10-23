@@ -162,7 +162,7 @@ public class PurchaseRequest {
         return "ID: " + id +
                 "\nЖелаемое количество комнат: " + roomCount +
                 "\nДиапазон площади: " + minArea + " - " + maxArea +
-                "\nЦеновой диапазон: " + minPrice * 1.0 / 100 + " - " + maxPrice * 1.0 / 100 + " BYN" +
+                "\nЦеновой диапазон: " + minPrice * 1.0 / 100 + " - " + maxPrice * 1.0 / 100 + " $" +
                 "\nКлиент:\n" + client;
     }
 }
