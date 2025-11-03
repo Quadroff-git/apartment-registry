@@ -46,6 +46,11 @@ dependencies {
     testImplementation(platform("org.junit:junit-bom:5.10.0"))
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.postgresql:postgresql:42.7.8")
+
+    implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.85")
+    implementation("org.apache.tomcat.embed:tomcat-embed-jasper:9.0.85")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 }
 
 tasks.test {
