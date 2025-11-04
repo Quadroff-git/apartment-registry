@@ -49,7 +49,7 @@ dependencies {
 
     implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.85")
     implementation("org.apache.tomcat.embed:tomcat-embed-jasper:9.0.85")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.15.2")
+    implementation("tools.jackson.jr:jackson-jr-objects:3.0.1")
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 }
 
