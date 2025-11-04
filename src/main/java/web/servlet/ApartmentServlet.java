@@ -23,14 +23,15 @@ public class ApartmentServlet extends HttpServlet {
     }
 
     @Override
-    protected void doGet(HttpServletRequest request, HttpServletResponse response) {
+    protected void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException {
         try {
             List<Apartment> apartments = apartmentService.getAll();
             response.setContentType("application/json");
             PrintWriter writer = response.getWriter();
             JSON.std.write(apartments, writer);
-        } catch (ServiceException | IOException e) {
+        } catch (ServiceException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(JSON.std.asString(e));
         }
     }
 }
