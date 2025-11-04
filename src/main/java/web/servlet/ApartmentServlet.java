@@ -17,9 +17,11 @@ import java.util.List;
 public class ApartmentServlet extends HttpServlet {
     private ApartmentService apartmentService;
 
-    public ApartmentServlet(ApartmentService apartmentService) {
-        this.apartmentService = apartmentService;
+    @Override
+    public void init() {
+        this.apartmentService = (ApartmentService) getServletContext().getAttribute("apartmentService");
     }
+
     @Override
     protected void doGet(HttpServletRequest request, HttpServletResponse response) {
         try {
