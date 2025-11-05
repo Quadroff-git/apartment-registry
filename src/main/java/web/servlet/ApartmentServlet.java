@@ -17,9 +17,9 @@ import java.util.List;
 public class ApartmentServlet extends HttpServlet {
     private ApartmentService apartmentService;
 
-    @Override
-    public void init() {
-        this.apartmentService = (ApartmentService) getServletContext().getAttribute("apartmentService");
+    public ApartmentServlet(ApartmentService apartmentService) {
+        super();
+        this.apartmentService = apartmentService;
     }
 
     @Override
@@ -27,6 +27,7 @@ public class ApartmentServlet extends HttpServlet {
         try {
             List<Apartment> apartments = apartmentService.getAll();
             response.setContentType("application/json");
+            response.setCharacterEncoding("UTF-8");
             PrintWriter writer = response.getWriter();
             JSON.std.write(apartments, writer);
         } catch (ServiceException e) {
