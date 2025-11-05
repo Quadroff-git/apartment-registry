@@ -47,8 +47,8 @@ dependencies {
     testImplementation("org.junit.jupiter:junit-jupiter")
     implementation("org.postgresql:postgresql:42.7.8")
 
-    implementation("org.apache.tomcat.embed:tomcat-embed-core:9.0.85")
-    implementation("org.apache.tomcat.embed:tomcat-embed-jasper:9.0.85")
+    implementation("org.apache.tomcat.embed:tomcat-embed-core:8.0.48")
+    implementation("org.apache.tomcat.embed:tomcat-embed-jasper:8.0.48")
     implementation("tools.jackson.jr:jackson-jr-objects:3.0.1")
     compileOnly("javax.servlet:javax.servlet-api:4.0.1")
 }
