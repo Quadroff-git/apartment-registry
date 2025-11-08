@@ -41,6 +41,8 @@ public class Apartment {
         this.id = id;
     }
 
+    public Apartment() {}
+
 
     public Integer getId() {
         return id;
