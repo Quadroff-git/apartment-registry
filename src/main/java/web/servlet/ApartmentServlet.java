@@ -40,7 +40,12 @@ public class ApartmentServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+        if (!checkBody(request, response)) {
+            return;
+        }
+
         Apartment apartment = JSON.std.beanFrom(Apartment.class, request.getReader());
         response.setContentType("application/json");
         response.setCharacterEncoding("UTF-8");
