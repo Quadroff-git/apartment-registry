@@ -11,7 +11,7 @@ import javax.servlet.ServletException;
 import java.io.File;
 
 public class Server {
-    public static void main(String[] args) throws LifecycleException {
+    public static void main(String[] args) {
         ConnectionManager connectionManager = new ConnectionManager(args[0], args[1], args[2]);
         ApartmentService apartmentService = new ApartmentService(connectionManager);
         ApartmentServlet apartmentServlet = new ApartmentServlet(apartmentService);
@@ -31,7 +31,11 @@ public class Server {
         tomcat.addServlet(contextPath, servletName, apartmentServlet);
         context.addServletMappingDecoded(urlPattern, servletName);
 
-        tomcat.start();
+        try {
+            tomcat.start();
+        } catch (LifecycleException e) {
+            System.out.println(e);
+        }
         System.out.println("server waiting at http://localhost:8080/api/");
         tomcat.getServer().await();
     }
