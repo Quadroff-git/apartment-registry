@@ -13,8 +13,8 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.Reader;
 import java.util.List;
-import java.util.stream.Collectors;
 
 @WebServlet("/apartment")
 public class ApartmentServlet extends HttpServlet {
@@ -42,13 +42,11 @@ public class ApartmentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        if (!checkBody(request, response)) {
+        if (!validateBody(request, response)) {
             return;
         }
 
         Apartment apartment = JSON.std.beanFrom(Apartment.class, request.getReader());
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
 
         List<PurchaseRequest> purchaseRequests = null;
         try {
@@ -65,5 +63,43 @@ public class ApartmentServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write(JSON.std.asString(e));
         }
+    }
+
+    @Override
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+        request.setCharacterEncoding("UTF-8");
+        Apartment apartment = JSON.std.beanFrom(Apartment.class, request.getReader());
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        if (!validateBody(request, response)) {
+            return;
+        }
+
+        try {
+            boolean result = apartmentService.update(apartment);
+
+            if (result) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+        } catch (ServiceException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(JSON.std.asString(e));
+        }
+    }
+
+    private boolean validateBody(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        Reader reader = request.getReader();
+        response.setContentType("application/json");
+        response.setCharacterEncoding("UTF-8");
+        if (!reader.ready()) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            JSON.std.write("No entity supplied", response.getWriter());
+            return false;
+        }
+
+        return true;
     }
 }
