@@ -30,7 +30,6 @@ public class PurchaseRequest {
         this.client = client;
     }
 
-
     public PurchaseRequest(int id, int roomCount, int minArea, int maxArea, int minPrice, int maxPrice, Client client) {
         this.id = id;
         this.client = client;
@@ -40,6 +39,8 @@ public class PurchaseRequest {
         this.minArea = minArea;
         this.roomCount = roomCount;
     }
+
+    public PurchaseRequest() {}
 
 
     public Integer getId() { return id; }
