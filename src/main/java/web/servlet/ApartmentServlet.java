@@ -105,6 +105,47 @@ public class ApartmentServlet extends HttpServlet {
         }
     }
 
+    @Override
+    protected void doDelete(HttpServletRequest request, HttpServletResponse response) throws IOException {
+        request.setCharacterEncoding("UTF-8");
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+
+        String idString = request.getParameter("id");
+
+        if (idString == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(JSON.std.asString("Supply id of the apartment to delete as a parameter"));
+            return;
+        }
+
+        Integer id = null;
+        try {
+            id = Integer.parseInt(idString);
+        } catch (NumberFormatException e) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(JSON.std.asString("Id must be a number"));
+            return;
+        }
+
+        try {
+            boolean result = apartmentService.delete(id);
+
+            if (result) {
+                response.setStatus(HttpServletResponse.SC_OK);
+            }
+            else {
+                response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            }
+
+        } catch (ServiceException e) {
+            response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
+            response.getWriter().write(JSON.std.asString(e));
+        }
+
+    }
+
     private String getRequestBody(HttpServletRequest request) throws IOException {
         try (Reader reader = request.getReader()) {
             if (!reader.ready()) {
