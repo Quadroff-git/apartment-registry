@@ -102,4 +102,24 @@ public class ApartmentServlet extends HttpServlet {
 
         return true;
     }
+
+    private String getRequestBody(HttpServletRequest request) throws IOException {
+        try (Reader reader = request.getReader()) {
+            if (!reader.ready()) {
+                return null;
+            }
+
+            BufferedReader  bufferedReader = new BufferedReader(reader);
+            StringBuilder stringBuilder = new StringBuilder();
+            String line;
+
+            while ((line = bufferedReader.readLine()) != null) {
+                stringBuilder.append(line);
+                stringBuilder.append(System.lineSeparator());
+            }
+
+            return stringBuilder.toString();
+
+        }
+    }
 }
