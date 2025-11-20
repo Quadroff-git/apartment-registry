@@ -6,17 +6,18 @@ import service.ApartmentService;
 import service.ServiceException;
 import tools.jackson.jr.ob.JSON;
 
-import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.Reader;
 import java.util.List;
 
 @WebServlet("/apartment")
+// TODO: Create AbstractServlet for sevlets to inherit
 public class ApartmentServlet extends HttpServlet {
     private ApartmentService apartmentService;
 
@@ -42,11 +43,18 @@ public class ApartmentServlet extends HttpServlet {
     @Override
     protected void doPost(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        if (!validateBody(request, response)) {
+
+        response.setCharacterEncoding("UTF-8");
+        response.setContentType("application/json");
+
+        String requestBody = getRequestBody(request);
+        if (requestBody == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(JSON.std.asString("The request body is empty!"));
             return;
         }
 
-        Apartment apartment = JSON.std.beanFrom(Apartment.class, request.getReader());
+        Apartment apartment = JSON.std.beanFrom(Apartment.class, requestBody);
 
         List<PurchaseRequest> purchaseRequests = null;
         try {
@@ -57,7 +65,8 @@ public class ApartmentServlet extends HttpServlet {
             }
             else {
                 response.setStatus(HttpServletResponse.SC_OK);
-                JSON.std.write(purchaseRequests, response.getWriter());
+                //JSON.std.write(purchaseRequests, response.getWriter());
+                response.getWriter().write(JSON.std.asString(purchaseRequests));
             }
         } catch (ServiceException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
@@ -66,14 +75,20 @@ public class ApartmentServlet extends HttpServlet {
     }
 
     @Override
-    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+    protected void doPut(HttpServletRequest request, HttpServletResponse response) throws IOException {
         request.setCharacterEncoding("UTF-8");
-        Apartment apartment = JSON.std.beanFrom(Apartment.class, request.getReader());
-        response.setContentType("application/json");
+
         response.setCharacterEncoding("UTF-8");
-        if (!validateBody(request, response)) {
+        response.setContentType("application/json");
+
+        String requestBody = getRequestBody(request);
+        if (requestBody == null) {
+            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
+            response.getWriter().write(JSON.std.asString("The request body is empty!"));
             return;
         }
+
+        Apartment apartment = JSON.std.beanFrom(Apartment.class, requestBody);
 
         try {
             boolean result = apartmentService.update(apartment);
@@ -88,19 +103,6 @@ public class ApartmentServlet extends HttpServlet {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write(JSON.std.asString(e));
         }
-    }
-
-    private boolean validateBody(HttpServletRequest request, HttpServletResponse response) throws IOException {
-        Reader reader = request.getReader();
-        response.setContentType("application/json");
-        response.setCharacterEncoding("UTF-8");
-        if (!reader.ready()) {
-            response.setStatus(HttpServletResponse.SC_BAD_REQUEST);
-            JSON.std.write("No entity supplied", response.getWriter());
-            return false;
-        }
-
-        return true;
     }
 
     private String getRequestBody(HttpServletRequest request) throws IOException {
