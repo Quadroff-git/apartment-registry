@@ -7,19 +7,15 @@ import service.ServiceException;
 import tools.jackson.jr.ob.JSON;
 
 import javax.servlet.annotation.WebServlet;
-import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.PrintWriter;
-import java.io.Reader;
 import java.util.List;
 
 @WebServlet("/apartment")
-// TODO: Create AbstractServlet for sevlets to inherit
-public class ApartmentServlet extends HttpServlet {
-    private ApartmentService apartmentService;
+public class ApartmentServlet extends BaseServlet {
+    private final ApartmentService apartmentService;
 
     public ApartmentServlet(ApartmentService apartmentService) {
         super();
@@ -142,27 +138,6 @@ public class ApartmentServlet extends HttpServlet {
         } catch (ServiceException e) {
             response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
             response.getWriter().write(JSON.std.asString(e));
-        }
-
-    }
-
-    private String getRequestBody(HttpServletRequest request) throws IOException {
-        try (Reader reader = request.getReader()) {
-            if (!reader.ready()) {
-                return null;
-            }
-
-            BufferedReader  bufferedReader = new BufferedReader(reader);
-            StringBuilder stringBuilder = new StringBuilder();
-            String line;
-
-            while ((line = bufferedReader.readLine()) != null) {
-                stringBuilder.append(line);
-                stringBuilder.append(System.lineSeparator());
-            }
-
-            return stringBuilder.toString();
-
         }
     }
 }
